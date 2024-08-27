@@ -18,8 +18,9 @@ class RPIMotorServiceImpl(rpi_motor_pb2_grpc.RPIMotorServicer):
     def __init__(self):
         GPIO.setmode(GPIO.BOARD)
 
+        self.count = 0
         self.new_cmd = False
-        self.chan_list = [33, 35, 36, 37, 38, 40, 23, 24]
+        self.chan_list = [33, 35, 36, 37, 38, 40, 23, 24, 21]
         self.enc_list =  [13, 15, 16, 18, 29, 31]
 
         self.enc = np.array([0, 0, 0], dtype=np.float64)
@@ -73,8 +74,9 @@ class RPIMotorServiceImpl(rpi_motor_pb2_grpc.RPIMotorServicer):
         self.pwm.append(GPIO.PWM(37, self.freq))
         self.pwm.append(GPIO.PWM(33, self.freq))
         self.pwm.append(GPIO.PWM(35, self.freq))
-        self.pwm.append(GPIO.PWM(23, self.freq))
-        self.pwm.append(GPIO.PWM(24, self.freq))
+        self.pwm.append(GPIO.PWM(23, self.freq)) # elevator dc pwm1
+        self.pwm.append(GPIO.PWM(24, self.freq)) # elevator dc pwm2
+        self.pwm.append(GPIO.PWM(21, 50)) # servo pwm
 
         for idx in range(0, 3):
             self.err_hist.append([])
@@ -83,6 +85,7 @@ class RPIMotorServiceImpl(rpi_motor_pb2_grpc.RPIMotorServicer):
 
         self.pwm[6].start(0.0)
         self.pwm[7].start(0.0)
+        self.pwm[8].start(0.0)
 
         self.dp = threading.Thread(target=self.display_stats)
         self.dp.start()
@@ -90,6 +93,9 @@ class RPIMotorServiceImpl(rpi_motor_pb2_grpc.RPIMotorServicer):
         self.ct.start()
 
         print("GPIO initialized")
+
+    def map_range(self, x, in_min, in_max, out_min, out_max):
+        return (x - in_min) * (out_max - out_min) // (in_max - in_min) + out_min
 
     def encoder_0_cbk(self, chan):
         curr = str(GPIO.input(13)) + str(GPIO.input(15))
@@ -190,12 +196,14 @@ class RPIMotorServiceImpl(rpi_motor_pb2_grpc.RPIMotorServicer):
                 self.pwm[6+1].ChangeDutyCycle(0.0)
             elif self.v_heave < 0.0:
                 self.pwm[6].ChangeDutyCycle(0.0)
-                self.pwm[6+1].ChangeDutyCycle(-100.0)
+                self.pwm[6+1].ChangeDutyCycle(100.0)
             else:
                 self.pwm[6].ChangeDutyCycle(100.0)
                 self.pwm[6+1].ChangeDutyCycle(0.0)
-
-
+            
+            if self.count % 1 == 0:
+                self.pwm[8].ChangeDutyCycle(self.map_range(self.pitch, 0., 0.1, 5., 10.))
+            self.count += 1
             time.sleep(0.01)
 
     def SetState(self, request, context):
