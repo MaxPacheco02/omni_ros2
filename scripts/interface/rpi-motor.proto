@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package omnirobotrpi;
+
+// Interface exported by the server.
+service RPIMotor {
+
+  rpc SetState(StateRequest) returns (StateReply) {}
+
+}
+
+message StateRequest {
+  double vel_x = 1;
+  double vel_y = 2;
+  double vel_yaw = 3;
+  double vel_heave = 4;
+  double pitch = 5;
+  double leds = 6;
+}
+
+message StateReply {
+  bool res = 1;
+}
