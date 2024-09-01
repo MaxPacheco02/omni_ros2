@@ -57,7 +57,7 @@ class TeleopControl(Node):
         z_ = msg.buttons[z_up_i] - msg.buttons[z_down_i]*1.
         self.curr_vel[2] = z_*self.increment
         
-        self.current_pitch += -msg.axes[q_i]*self.increment
+        self.current_pitch += -msg.axes[q_i]*self.increment*0.5
         self.current_pitch = max( 0. , min( self.current_pitch , 1. ))
         q = self.current_pitch*1.
 

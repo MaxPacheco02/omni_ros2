@@ -2,6 +2,7 @@ import RPi.GPIO as GPIO
 import time
 import threading
 import numpy as np
+import math
 
 from concurrent import futures
 import logging
@@ -202,7 +203,7 @@ class RPIMotorServiceImpl(rpi_motor_pb2_grpc.RPIMotorServicer):
                 self.pwm[6+1].ChangeDutyCycle(0.0)
             
             if self.count % 1 == 0:
-                self.pwm[8].ChangeDutyCycle(self.map_range(self.pitch, 0., 0.1, 5., 10.))
+                self.pwm[8].ChangeDutyCycle(self.map_range(self.pitch, 0., 0.1, 5., 11.))
             self.count += 1
             time.sleep(0.01)
 
