@@ -5,3 +5,9 @@
 	path = src/rplidar_ros
 	url = https://github.com/Slamtec/rplidar_ros.git
 	branch = ros2
+[submodule "diagnostics"]
+	path = diagnostics
+	url = https://github.com/ros/diagnostics.git
+[submodule "src/diagnostics"]
+	path = src/diagnostics
+	url = https://github.com/ros/diagnostics.git
