@@ -16,7 +16,6 @@ find_package(visualization_msgs REQUIRED)
 find_package(std_srvs)
 find_package(geometry_msgs)
 find_package(sensor_msgs)
-find_package(usv_interfaces)
 find_package(Eigen3 REQUIRED)
 
 #===================================
