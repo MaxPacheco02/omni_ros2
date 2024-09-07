@@ -19,7 +19,7 @@ class TeleopControl(Node):
         self.max_vel  = [1., 1., 1., 1.] # +- for (x,y,z) linear, (z) ang.
         self.curr_vel = [0., 0., 0., 0.]
 
-        self.current_pitch = 0.5
+        self.current_pitch = 7.5
 
         self.increment = 0.1
 
@@ -57,8 +57,8 @@ class TeleopControl(Node):
         z_ = msg.buttons[z_up_i] - msg.buttons[z_down_i]*1.
         self.curr_vel[2] = z_*self.increment
         
-        self.current_pitch += -msg.axes[q_i]*self.increment*0.5
-        self.current_pitch = max( 0. , min( self.current_pitch , 1. ))
+        self.current_pitch += -msg.axes[q_i]*self.increment*1.5
+        self.current_pitch = max( 5. , min( self.current_pitch , 10. ))
         q = self.current_pitch*1.
 
         multiplier = 0.1
@@ -71,7 +71,7 @@ class TeleopControl(Node):
             r = 0.
 
         self.twist_msg = Twist(linear = Vector3(x = u*multiplier, y = v*multiplier, z = z_*multiplier),
-                               angular = Vector3(x = 0., y = q*multiplier, z = r*multiplier))
+                               angular = Vector3(x = 0., y = q, z = r*multiplier))
 
         self.twist_pub.publish(self.twist_msg)
 

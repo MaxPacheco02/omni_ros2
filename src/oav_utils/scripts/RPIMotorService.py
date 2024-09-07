@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import RPi.GPIO as GPIO
 import time
 import threading
@@ -195,7 +197,7 @@ class RPIMotorServiceImpl(rpi_motor_pb2_grpc.RPIMotorServicer):
             if self.v_heave == 0.0:
                 self.pwm[6].ChangeDutyCycle(0.0)
                 self.pwm[6+1].ChangeDutyCycle(0.0)
-            elif self.v_heave < 0.0:
+            elif self.v_heave > 0.0:
                 self.pwm[6].ChangeDutyCycle(0.0)
                 self.pwm[6+1].ChangeDutyCycle(100.0)
             else:
@@ -203,7 +205,7 @@ class RPIMotorServiceImpl(rpi_motor_pb2_grpc.RPIMotorServicer):
                 self.pwm[6+1].ChangeDutyCycle(0.0)
             
             if self.count % 1 == 0:
-                self.pwm[8].ChangeDutyCycle(self.map_range(self.pitch, 0., 0.1, 5., 11.))
+                self.pwm[8].ChangeDutyCycle(self.pitch)
             self.count += 1
             time.sleep(0.01)
 

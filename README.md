@@ -16,3 +16,6 @@ ssh user@192.168.55.1
 
 # Max Hotspot
 ssh user@10.42.0.243
+
+# RPI
+ssh pi@192.168.1.11
