@@ -47,8 +47,6 @@ class GrpcClient(Node):
         
 
     def listener_callback(self, msg):
-        self.get_logger().info("a")
-
         self.u = msg.linear.x
         self.v = msg.linear.y
         self.w = msg.linear.z

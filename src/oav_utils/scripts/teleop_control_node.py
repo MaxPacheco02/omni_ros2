@@ -61,7 +61,12 @@ class TeleopControl(Node):
         self.current_pitch = max( 5. , min( self.current_pitch , 10. ))
         q = self.current_pitch*1.
 
-        multiplier = 0.1
+        multiplier_x = 0.05
+        multiplier_y = 0.01
+        multiplier_r = 0.1
+        # multiplier_x = 0.5
+        # multiplier_y = 0.5
+        # multiplier_r = 1.
         
         if abs(u) < 0.1:
             u = 0.
@@ -70,8 +75,8 @@ class TeleopControl(Node):
         if abs(r) < 0.1:
             r = 0.
 
-        self.twist_msg = Twist(linear = Vector3(x = u*multiplier, y = v*multiplier, z = z_*multiplier),
-                               angular = Vector3(x = 0., y = q, z = r*multiplier))
+        self.twist_msg = Twist(linear = Vector3(x = u*multiplier_x, y = v*multiplier_y, z = z_),
+                               angular = Vector3(x = 0., y = q, z = r*multiplier_r))
 
         self.twist_pub.publish(self.twist_msg)
 

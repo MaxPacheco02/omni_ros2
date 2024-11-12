@@ -23,7 +23,7 @@ class RPIMotorServiceImpl(rpi_motor_pb2_grpc.RPIMotorServicer):
 
         self.count = 0
         self.new_cmd = False
-        self.chan_list = [33, 35, 36, 37, 38, 40, 23, 24, 21]
+        self.chan_list = [33, 35, 36, 37, 38, 40, 23, 24, 21, 7]
         self.enc_list =  [13, 15, 16, 18, 29, 31]
 
         self.enc = np.array([0, 0, 0], dtype=np.float64)
@@ -80,6 +80,7 @@ class RPIMotorServiceImpl(rpi_motor_pb2_grpc.RPIMotorServicer):
         self.pwm.append(GPIO.PWM(23, self.freq)) # elevator dc pwm1
         self.pwm.append(GPIO.PWM(24, self.freq)) # elevator dc pwm2
         self.pwm.append(GPIO.PWM(21, 50)) # servo pwm
+        self.pwm.append(GPIO.PWM(7, 200)) # LEDs pwm
 
         for idx in range(0, 3):
             self.err_hist.append([])
@@ -89,6 +90,7 @@ class RPIMotorServiceImpl(rpi_motor_pb2_grpc.RPIMotorServicer):
         self.pwm[6].start(0.0)
         self.pwm[7].start(0.0)
         self.pwm[8].start(0.0)
+        self.pwm[9].start(0.0)
 
         self.dp = threading.Thread(target=self.display_stats)
         self.dp.start()
@@ -206,6 +208,7 @@ class RPIMotorServiceImpl(rpi_motor_pb2_grpc.RPIMotorServicer):
             
             if self.count % 1 == 0:
                 self.pwm[8].ChangeDutyCycle(self.pitch)
+                self.pwm[9].ChangeDutyCycle(100.0)
             self.count += 1
             time.sleep(0.01)
 
